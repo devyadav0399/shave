@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import pool from "./src/db/client";
 
 const app = new Hono();
 
@@ -16,6 +17,22 @@ app.get("/health", (c) =>
     message: "Health check passed!",
   }),
 );
+
+app.get('/health/db', async (c) => {
+  await pool.query('SELECT 1');
+  return c.json({
+    ok: true,
+    message: "DB health check passed!"
+  });
+});
+
+app.get('/db-test', async (c) => {
+  const queryResult = await pool.query('SELECT * FROM category')
+  return c.json({
+    ok: true,
+    data: queryResult.rows
+  })
+})
 
 export default {
   port: process.env.PORT,
