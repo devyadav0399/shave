@@ -7,7 +7,7 @@
     "apps/*"
   ],
   "scripts": {
-    "dev": "bun --env-file=.env run --filter shave-server dev & bun --env-file=.env run --filter shave-client dev"
+    "dev": "bun --elide-lines=0 --env-file=.env run --filter shave-server dev & bun --env-file=.env run --filter shave-client dev"
   },
   "devDependencies": {
     "@types/bun": "latest"

@@ -1,0 +1,141 @@
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import pool from "./db/client";
+import { HTTPException } from "hono/http-exception";
+import { AppError } from './utils/AppError'
+import { isValidUUID } from "./utils/validation";
+
+const app = new Hono();
+
+app.use(
+  "*",
+  cors({
+    origin: process.env.FE_URL || "http://localhost:5173",
+  }),
+);
+
+// Health Check endpoints
+app.get("/health", (c) =>
+  c.json({
+    ok: true,
+    message: "Health check passed!",
+  }),
+);
+
+app.get('/health/db', async (c) => {
+  await pool.query('SELECT 1');
+  return c.json({
+    ok: true,
+    message: "DB health check passed!"
+  });
+});
+
+// Category endpoints
+app.get('/categories', async (c) => {
+  const queryResult = await pool.query('SELECT * FROM category')
+  return c.json({
+    ok: true,
+    data: queryResult.rows
+  })
+})
+
+app.post('/categories', async (c) => {
+  const body = await c.req.json()
+  if (!body?.name?.trim()) throw new AppError(400, 'Some fields are missing.')
+  const result = await pool.query('INSERT INTO category (name) VALUES ($1) RETURNING *;', [body.name])
+  return c.json(
+    {
+      ok: true,
+      data: result.rows[0]
+    },
+    201
+  )
+})
+
+// Link endpoints
+app.get('/links', async (c) => {
+  const { category } = c.req.query()
+  const sql = category ? 'SELECT * FROM link WHERE category_id=$1' : 'SELECT * FROM link';
+  const params = category ? [category] : [];
+  const result = await pool.query(sql, params);
+  if (result.rows.length === 0 && category) throw new AppError(404, 'No links found')
+  // TODO: check for invalid category provided and throw
+  return c.json({
+    ok: true,
+    data: result?.rows
+  })
+})
+
+app.get('/links/:linkId', async (c) => {
+  const { linkId } = c.req.param()
+  if(!isValidUUID(linkId)) throw new AppError(400, 'Invalid ID')
+  const result = await pool.query('SELECT * from link where id=$1', [linkId])
+  if (result.rows.length > 0) {
+    return c.json({
+      ok: true,
+      data: result.rows[0]
+    })
+  } else throw new AppError(404, 'Not found')
+})
+
+app.post('/links', async (c) => {
+  const body = await c.req.json()
+  if (!body?.url?.trim()) throw new AppError(400, 'Some fields are missing.')
+  const result = await pool.query('INSERT INTO link (url) VALUES ($1) RETURNING *;', [body.url])
+  return c.json(
+    {
+      ok: true,
+      data: result.rows[0]
+    },
+    201
+  )
+})
+
+// Error handling
+app.notFound((c) => {
+  return c.json(
+    {
+      ok: false,
+      error: 'Route not found',
+    },
+    404
+  )
+})
+
+app.onError((err, c) => {
+  console.error('Unhandled error:', err)
+
+  if (err instanceof AppError) {
+    return c.json(
+      {
+        ok: false,
+        error: err.message,
+      },
+      err.statusCode
+    )
+  }
+
+  if (err instanceof HTTPException) {
+    return c.json(
+      {
+        ok: false,
+        error: err.message,
+      },
+      err.status
+    )
+  }
+
+  return c.json(
+    {
+      ok: false,
+      error: 'Something went wrong',
+    },
+    500
+  )
+})
+
+
+export default {
+  port: process.env.PORT,
+  fetch: app.fetch,
+};
