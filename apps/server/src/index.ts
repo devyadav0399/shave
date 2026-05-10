@@ -4,6 +4,8 @@ import pool from "./db/client";
 import { HTTPException } from "hono/http-exception";
 import { AppError } from './utils/AppError'
 import { isValidUUID } from "./utils/validation";
+import { enrichLink } from "./services/enrichment";
+import { patchLinkQuery } from "./utils/linkQueryBuilder";
 
 const app = new Hono();
 
@@ -82,6 +84,8 @@ app.post('/links', async (c) => {
   const body = await c.req.json()
   if (!body?.url?.trim()) throw new AppError(400, 'Some fields are missing.')
   const result = await pool.query('INSERT INTO link (url) VALUES ($1) RETURNING *;', [body.url])
+  enrichLink(result.rows[0].id)
+    .catch(e => console.log(e))
   return c.json(
     {
       ok: true,
@@ -89,6 +93,20 @@ app.post('/links', async (c) => {
     },
     201
   )
+})
+
+app.patch('/links/:linkId', async (c) => {
+  const { linkId } = c.req.param()
+  if (!isValidUUID(linkId)) throw new AppError(400, 'Invalid ID')
+  const body = await c.req.json()
+  if (!body?.title?.trim() && !body?.summary?.trim() && !body?.isConsumed && !body?.categoryId) throw new AppError(400, 'No fields provided')
+  const { query, values } = patchLinkQuery(body);
+  const updateResult = await pool.query(`UPDATE link SET ${query} WHERE id=$${values.length + 1} RETURNING *;`, [...values, linkId])
+  if (updateResult.rows.length === 0) throw new AppError(404, 'Link not found')
+  return c.json({
+    ok: true,
+    data: updateResult.rows[0]
+  })
 })
 
 // Error handling
