@@ -109,6 +109,18 @@ app.patch('/links/:linkId', async (c) => {
   })
 })
 
+app.delete('/links/:linkId', async (c) => {
+  const { linkId } = c.req.param()
+  if (!isValidUUID(linkId)) throw new AppError(400, 'Invalid ID')
+  const result = await pool.query('DELETE FROM link where id=$1 RETURNING *;', [linkId])
+  if (result.rows.length > 0) {
+    return c.json({
+      ok: true,
+      data: result.rows[0]
+    })
+  } else throw new AppError(404, 'Not found')
+})
+
 // Error handling
 app.notFound((c) => {
   return c.json(
