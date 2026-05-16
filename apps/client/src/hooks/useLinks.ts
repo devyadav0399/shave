@@ -8,6 +8,7 @@ export interface UseLinksReturn {
   isSaving: boolean;
   isError: boolean;
   create: (url: string) => Promise<void>;
+  refetch: () => Promise<void>;
 }
 
 const useLinks = () => {
@@ -19,6 +20,15 @@ const useLinks = () => {
   useEffect(() => {
     fetchAllLinks()
   }, [])
+
+  useEffect(() => {
+    if (links.some(link => link.enrichmentStatus === 'pending' || link.enrichmentStatus === 'retry')) {
+      const id = setInterval(() => {
+        fetchAllLinks()
+      }, 3000)
+      return () => clearInterval(id)
+    }
+  }, [links])
 
   const fetchAllLinks = async () => {
     try {
@@ -51,7 +61,8 @@ const useLinks = () => {
     isLoading,
     isSaving,
     isError,
-    create
+    create,
+    refetch: fetchAllLinks
   }
 }
 

@@ -99,7 +99,7 @@ app.patch('/links/:linkId', async (c) => {
   const { linkId } = c.req.param()
   if (!isValidUUID(linkId)) throw new AppError(400, 'Invalid ID')
   const body = await c.req.json()
-  if (!body?.title?.trim() && !body?.summary?.trim() && !body?.isConsumed && !body?.categoryId) throw new AppError(400, 'No fields provided')
+  if (!body?.title?.trim() && !body?.summary?.trim() && !('isConsumed' in body) && !body?.categoryId) throw new AppError(400, 'No fields provided')
   const { query, values } = patchLinkQuery(body);
   const updateResult = await pool.query(`UPDATE link SET ${query} WHERE id=$${values.length + 1} RETURNING *;`, [...values, linkId])
   if (updateResult.rows.length === 0) throw new AppError(404, 'Link not found')
