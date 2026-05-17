@@ -15,7 +15,7 @@ const LinkCard: FC<LinkCardProps> = ({ link, onClick }) => {
   }
   return (
     <div className={`border-2 rounded-md my-2 p-2 hover:bg-gray-400 hover:cursor-pointer ${link.isConsumed ? 'border-green-500' : 'border-gray-300'}`}  onClick={() => onClick(link)}>
-      <div className='max-w-30 min-h-15'>
+      <div>
         <p className='font-bold truncate'>
           {resolveTitle(link)}
         </p>

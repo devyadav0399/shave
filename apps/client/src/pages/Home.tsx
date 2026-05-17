@@ -2,6 +2,7 @@ import LinkCard from "@/components/LinkCard";
 import LinkModal from "@/components/LinkModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import useCategories from "@/hooks/useCategories";
 import useLinks from "@/hooks/useLinks";
 import type { Link } from "@/types/link";
 import { Save } from 'lucide-react'
@@ -12,6 +13,7 @@ const Home = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [selectedLink, setSelectedLink] = useState<Link | null>(null)
   const { links, isSaving, isError, create, refetch } = useLinks()
+  const { categoryMap } = useCategories()
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -37,10 +39,10 @@ const Home = () => {
         </Button>
       </div>
       <h2>Recents</h2>
-      <div id="recents" className="grid grid-cols-5 grid-rows-5 gap-5">
-        {links.slice(0,10).map((link) => <LinkCard key={link.id} link={link} onClick={handleClick} />)}
+      <div id="recents" className="grid grid-rows-[repeat(2,150px)] grid-cols-4 gap-2 max-w-[80%]">
+        {links.slice(0,8).map((link) => <LinkCard key={link.id} link={link} onClick={handleClick} />)}
       </div>
-    {selectedLink && <LinkModal link={selectedLink} onClose={() => setSelectedLink(null)} onUpdate={refetch}/>}
+      {selectedLink && <LinkModal link={selectedLink} onClose={() => setSelectedLink(null)} onUpdate={refetch} categoryMap={categoryMap} />}
     </div>
   );
 };

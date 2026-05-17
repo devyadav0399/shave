@@ -9,3 +9,5 @@ export interface Category {
   name: string;
   createdAt: string;
 }
+
+export type CategoryMap = Record<string, string>

@@ -3,14 +3,16 @@ import { Check, CircleCheck, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { links as linksApi } from "@/api/links";
 import Spinner from "./Spinner";
+import type { CategoryMap } from "@/types/category";
 
 interface LinkModalProps {
   link: Link;
   onClose: () => void;
   onUpdate: () => void;
+  categoryMap: CategoryMap;
 }
 
-export default function LinkModal({ link, onClose, onUpdate }: LinkModalProps) {
+export default function LinkModal({ link, onClose, onUpdate, categoryMap }: LinkModalProps) {
   const [freshLink, setFreshLink] = useState<Link | null>(null)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -54,7 +56,7 @@ export default function LinkModal({ link, onClose, onUpdate }: LinkModalProps) {
           {freshLink.type}
         </div>
         <div>
-          {freshLink.categoryId}
+          {freshLink.categoryId ? categoryMap[freshLink.categoryId] : 'N/A'}
         </div>
         <div>
           {freshLink.createdAt}
