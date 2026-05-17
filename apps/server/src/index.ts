@@ -60,7 +60,6 @@ app.get('/links', async (c) => {
   const sql = category ? 'SELECT * FROM link WHERE category_id=$1' : 'SELECT * FROM link';
   const params = category ? [category] : [];
   const result = await pool.query(sql, params);
-  if (result.rows.length === 0 && category) throw new AppError(404, 'No links found')
   // TODO: check for invalid category provided and throw
   return c.json({
     ok: true,
