@@ -11,29 +11,29 @@ export interface UseLinksReturn {
   refetch: () => Promise<void>;
 }
 
-const useLinks = () => {
+const useLinks = (categoryId?: string) => {
   const [links, setLinks] = useState<Link[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isSaving, setIsSaving] = useState<boolean>(false)
   const [isError, setIsError] = useState<boolean>(false)
 
   useEffect(() => {
-    fetchAllLinks()
-  }, [])
+    fetchAllLinks(categoryId)
+  }, [categoryId])
 
   useEffect(() => {
     if (links.some(link => link.enrichmentStatus === 'pending' || link.enrichmentStatus === 'retry')) {
       const id = setInterval(() => {
-        fetchAllLinks()
+        fetchAllLinks(categoryId)
       }, 3000)
       return () => clearInterval(id)
     }
-  }, [links])
+  }, [links, categoryId])
 
-  const fetchAllLinks = async () => {
+  const fetchAllLinks = async(categoryId?: string) => {
     try {
       setIsLoading(true)
-      const result = await linksApi.getAll()
+      const result = await linksApi.getAll(categoryId)
       setLinks(result)
     } catch (e) {
       setIsError(true)

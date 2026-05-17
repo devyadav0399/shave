@@ -15,8 +15,10 @@ function toLink(raw: ApiLink): Link {
   }
 }
 
-const getAll = async (): Promise<Link[]> => {
-  const response = await fetch(`${process.env.BUN_PUBLIC_BE_URL}/links`, { method: 'GET' })
+const getAll = async (categoryId?: string): Promise<Link[]> => {
+  let query = ''
+  if (categoryId) query=`?category=${categoryId}`
+  const response = await fetch(`${process.env.BUN_PUBLIC_BE_URL}/links${query}`, { method: 'GET' })
   if (!response.ok) throw new Error('Failed to fetch links')
   const data: { ok: boolean, data: ApiLink[] } = await response.json()
   return data.data.map(toLink)
