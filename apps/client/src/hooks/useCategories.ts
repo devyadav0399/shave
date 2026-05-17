@@ -19,7 +19,7 @@ const useCategories = () => {
   const [isError, setIsError] = useState<boolean>(false)
 
   const categoryMap = useMemo(() => {
-    return categories.reduce((acc, category) => ({ ...acc, [category.id]: category.name }), {})
+    return categories.reduce((acc, category) => ({ ...acc, [category.id]: category.name }), {} as CategoryMap)
     } , [categories])
 
   const fetchAllCategories = async () => {
