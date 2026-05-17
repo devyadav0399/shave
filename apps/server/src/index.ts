@@ -54,6 +54,18 @@ app.post('/categories', async (c) => {
   )
 })
 
+app.delete('/categories/:categoryId', async (c) => {
+  const { categoryId } = c.req.param()
+  if (!isValidUUID(categoryId)) throw new AppError(400, 'Invalid ID')
+  const result = await pool.query('DELETE FROM category WHERE id=$1 RETURNING *;', [categoryId])
+  if (result.rows.length > 0) {
+    return c.json({
+      ok: true,
+      data: result.rows[0]
+    })
+  } else throw new AppError(404, 'Not found')
+})
+
 // Link endpoints
 app.get('/links', async (c) => {
   const { category } = c.req.query()
