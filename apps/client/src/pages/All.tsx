@@ -17,9 +17,11 @@ const All = () => {
   return (
     <div className="flex flex-col justify-center items-center">
       <h1 className="text-3xl my-10">All saved links</h1>
-      <div className="flex flex-col max-w-[80%] mx-auto">
-        {links.map((link) => <LinkCard key={link.id} link={link} onClick={handleClick} />)}
-      </div>
+      {isError ? (<p>Something went wrong...</p>) : (
+        <div className="flex flex-col max-w-[80%] mx-auto">
+          {links.map((link) => <LinkCard key={link.id} link={link} onClick={handleClick} />)}
+        </div>
+      )}
       {selectedLink && <LinkModal link={selectedLink} onClose={() => setSelectedLink(null)} onUpdate={refetch} categoryMap={categoryMap}/>}
     </div>
   );

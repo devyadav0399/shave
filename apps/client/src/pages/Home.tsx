@@ -38,11 +38,15 @@ const Home = () => {
           <Save />
         </Button>
       </div>
-      <h2>Recents</h2>
-      <div id="recents" className="grid grid-rows-[repeat(2,150px)] grid-cols-4 gap-2 max-w-[80%]">
-        {links.slice(0,8).map((link) => <LinkCard key={link.id} link={link} onClick={handleClick} />)}
+      <h2 className="text-bold text-2xl">Recents</h2>
+      <div className="mt-4">
+        {isError ? (<p>Something went wrong...</p>) : (
+          <div className="grid grid-rows-[repeat(2,150px)] grid-cols-4 gap-2 max-w-[80%]">
+            {links.slice(0,8).map((link) => <LinkCard key={link.id} link={link} onClick={handleClick} />)}
+          </div>
+        )}
+        {selectedLink && <LinkModal link={selectedLink} onClose={() => setSelectedLink(null)} onUpdate={refetch} categoryMap={categoryMap} />}
       </div>
-      {selectedLink && <LinkModal link={selectedLink} onClose={() => setSelectedLink(null)} onUpdate={refetch} categoryMap={categoryMap} />}
     </div>
   );
 };

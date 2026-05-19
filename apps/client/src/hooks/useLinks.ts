@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Link } from "@/types/link"
 import { links as linksApi } from "@/api/links";
+import { toast } from "sonner";
 
 export interface UseLinksReturn {
   links: Link[];
@@ -37,6 +38,7 @@ const useLinks = (categoryId?: string) => {
       setLinks(result)
     } catch (e) {
       setIsError(true)
+      toast.error('Something went wrong while fetching the links. Please try again.')
       console.error(e)
     } finally {
       setIsLoading(false)
@@ -49,7 +51,7 @@ const useLinks = (categoryId?: string) => {
       await linksApi.create(url)
       fetchAllLinks()
     } catch (e) {
-      setIsError(true)
+      toast.error('Failed to save the link. Please try again.')
       console.error(e)
     } finally {
       setIsSaving(false)

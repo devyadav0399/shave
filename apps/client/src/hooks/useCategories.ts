@@ -1,6 +1,7 @@
 import type { Category, CategoryMap } from "@/types/category"
 import { useEffect, useMemo, useState } from "react";
 import { categories as categoriesApi } from "@/api/categories";
+import { toast } from "sonner";
 
 export interface useCategoriesReturn {
   categories: Category[];
@@ -29,6 +30,7 @@ const useCategories = () => {
       setCategories(result)
     } catch (e) {
       setIsError(true)
+      toast.error('Something went wrong while fetching the categories. Please try again.')
       console.error(e)
     } finally {
       setIsLoading(false)
@@ -41,7 +43,7 @@ const useCategories = () => {
       await categoriesApi.create(name)
       fetchAllCategories()
     } catch (e) {
-      setIsError(true)
+      toast.error('Something went wrong while creating the category.')
       console.error(e)
     } finally {
       setIsSaving(false)
