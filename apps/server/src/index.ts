@@ -69,7 +69,11 @@ app.delete('/categories/:categoryId', async (c) => {
 // Link endpoints
 app.get('/links', async (c) => {
   const { category } = c.req.query()
-  const sql = category ? 'SELECT * FROM link WHERE category_id=$1' : 'SELECT * FROM link';
+
+  const sql = category
+    ? 'SELECT * FROM link WHERE category_id=$1 ORDER BY created_at DESC'
+    : 'SELECT * FROM link ORDER BY created_at DESC';
+
   const params = category ? [category] : [];
   const result = await pool.query(sql, params);
   // TODO: check for invalid category provided and throw
