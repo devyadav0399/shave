@@ -8,7 +8,7 @@ interface CategoryCardProps {
 
 const CategoryCard: FC<CategoryCardProps> = ({ category, onClick }) => {
   return (
-    <div className='border-2 rounded-md my-2 p-2 hover:bg-gray-400 hover:cursor-pointer border-gray-300'  onClick={() => onClick(category)}>
+    <div className='border-2 rounded-md p-2 hover:bg-gray-200 hover:cursor-pointer border-gray-300'  onClick={() => onClick(category)}>
       <div>
         <p className='font-bold truncate'>
           {category.name}

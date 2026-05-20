@@ -30,22 +30,22 @@ export default function CategoryModal({ category, onClose }: CategoryModalProps)
     fetchLinks()
   }, [])
 
-  if (!freshLinks || isLoading) return <Spinner />
-
   return (
     <div onClick={onClose} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity">
-      <div className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all dark:bg-slate-900 border border-slate-100 dark:border-slate-800" onClick={(e) => e.stopPropagation()}>
-        <div>
-          {category.name}
+      {isLoading || !freshLinks ? <Spinner /> : (
+        <div className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all dark:bg-slate-900 border border-slate-100 dark:border-slate-800" onClick={(e) => e.stopPropagation()}>
+          <div>
+            {category.name}
+          </div>
+          <div>
+            {category.createdAt}
+          </div>
+          <div>
+            Links:
+            {freshLinks.map(link => <LinkCard link={link} />)}
+          </div>
         </div>
-        <div>
-          {category.createdAt}
-        </div>
-        <div>
-          Links:
-          {freshLinks.map(link => <LinkCard link={link} />)}
-        </div>
-      </div>
+      )}
     </div>
   );
 }

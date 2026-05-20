@@ -15,10 +15,10 @@ const All = () => {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap">
       <h1 className="text-2xl mb-6">All saved links</h1>
       {isError ? (<p>Something went wrong...</p>) : (
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
           {links.map((link) => <LinkCard key={link.id} link={link} onClick={handleClick} />)}
         </div>
       )}

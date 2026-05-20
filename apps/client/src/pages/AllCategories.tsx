@@ -20,7 +20,7 @@ const AllCategories = () => {
     <div>
       <h1 className="text-2xl mb-6">Categories</h1>
       {isError ? (<p className="text-center">Something went wrong...</p>) : (
-        <div className="grid grid-rows-[repeat(3,150px)] grid-cols-5 gap-2">
+        <div className="grid grid-cols-5 auto-rows-[150px] gap-2">
           {categories.map(category => <CategoryCard key={category.id}  category={category} onClick={handleClick} />)}
         </div>
       )}

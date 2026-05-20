@@ -41,46 +41,46 @@ export default function LinkModal({ link, onClose, onUpdate, categoryMap }: Link
     fetchLink()
   }, [])
 
-  if (!freshLink || isLoading) return <Spinner />
-
   return (
     <div onClick={onClose} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity">
-      <div className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all dark:bg-slate-900 border border-slate-100 dark:border-slate-800" onClick={(e) => e.stopPropagation()}>
-        <div>
-          {freshLink.title ? freshLink.title : freshLink.url}
+      {isLoading || !freshLink ? <Spinner /> : (
+        <div className="relative w-full max-w-lg overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all dark:bg-slate-900 border border-slate-100 dark:border-slate-800" onClick={(e) => e.stopPropagation()}>
+          <div>
+            {freshLink.title ? freshLink.title : freshLink.url}
+          </div>
+          <div>
+            {freshLink.url}
+          </div>
+          <div>
+            {freshLink.type}
+          </div>
+          <div>
+            {freshLink.categoryId ? categoryMap[freshLink.categoryId] : 'N/A'}
+          </div>
+          <div>
+            {freshLink.createdAt}
+          </div>
+          <div>
+            {freshLink.summary}
+          </div>
+          <div>
+            {freshLink.isConsumed ?
+              (<Check color="green" strokeWidth={3} onClick={handleToggleConsumed}/>)
+              :
+              (<CircleCheck
+                color="green"
+                fill="green"
+                size={24}
+                strokeWidth={2}
+                onClick={handleToggleConsumed}
+              />)
+            }
+          </div>
+          <div>
+            <X size={18} onClick={onClose}/>
+          </div>
         </div>
-        <div>
-          {freshLink.url}
-        </div>
-        <div>
-          {freshLink.type}
-        </div>
-        <div>
-          {freshLink.categoryId ? categoryMap[freshLink.categoryId] : 'N/A'}
-        </div>
-        <div>
-          {freshLink.createdAt}
-        </div>
-        <div>
-          {freshLink.summary}
-        </div>
-        <div>
-          {freshLink.isConsumed ?
-            (<Check color="green" strokeWidth={3} onClick={handleToggleConsumed}/>)
-            :
-            (<CircleCheck
-              color="green"
-              fill="green"
-              size={24}
-              strokeWidth={2}
-              onClick={handleToggleConsumed}
-            />)
-          }
-        </div>
-        <div>
-          <X size={18} onClick={onClose}/>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
