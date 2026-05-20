@@ -17,8 +17,8 @@ const Category = () => {
   }
 
   return (
-    <div className="flex flex-col max-w-[80%] mx-auto my-10">
-      <h1 className="text-3xl text-center">{id ? categoryMap[id] : 'n/a'}</h1>
+    <div className="flex flex-col">
+      <h1 className="text-2xl mb-6">{id ? categoryMap[id] : 'n/a'}</h1>
       {isError ? (<p className="text-center">Something went wrong...</p>) : (
         <div>
           {links.map((link) => <LinkCard key={link.id} link={link} onClick={handleClick} />)}

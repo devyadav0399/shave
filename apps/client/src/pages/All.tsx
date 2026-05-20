@@ -15,10 +15,10 @@ const All = () => {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center">
-      <h1 className="text-3xl my-10">All saved links</h1>
+    <div className="flex flex-col">
+      <h1 className="text-2xl mb-6">All saved links</h1>
       {isError ? (<p>Something went wrong...</p>) : (
-        <div className="flex flex-col max-w-[80%] mx-auto">
+        <div className="flex flex-col">
           {links.map((link) => <LinkCard key={link.id} link={link} onClick={handleClick} />)}
         </div>
       )}

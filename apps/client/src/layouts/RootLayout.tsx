@@ -4,11 +4,13 @@ import { Toaster } from "@/components/ui/sonner"
 
 const RootLayout = () => {
   return (
-    <div className="flex flex-col h-screen">
-      <div className="flex-1 overflow-y-auto w-5xl mx-auto shadow-[-8px_7px_34px_-3px_rgba(0,0,0,0.1)]">
-        <Outlet />
-      </div>
+    <div className="flex flex-col">
       <Navbar />
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-5xl mx-auto px-6 py-8">
+          <Outlet />
+        </div>
+      </div>
       <Toaster position="top-right"/>
     </div>
   )

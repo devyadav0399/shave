@@ -17,8 +17,8 @@ const AllCategories = () => {
   if (isLoading) return <Spinner />
 
   return (
-    <div className="max-w-[80%] mx-auto">
-      <h1 className="text-3xl text-center my-5">Categories</h1>
+    <div>
+      <h1 className="text-2xl mb-6">Categories</h1>
       {isError ? (<p className="text-center">Something went wrong...</p>) : (
         <div className="grid grid-rows-[repeat(3,150px)] grid-cols-5 gap-2">
           {categories.map(category => <CategoryCard key={category.id}  category={category} onClick={handleClick} />)}
