@@ -40,8 +40,8 @@ const Home = () => {
       </div>
       <h2 className="text-2xl mb-6">Recents</h2>
       {isError ? (<p>Something went wrong...</p>) : (
-        <div className="grid grid-rows-[repeat(2,150px)] grid-cols-4 gap-2">
-          {links.slice(0,8).map((link) => <LinkCard key={link.id} link={link} onClick={handleClick} />)}
+        <div className="grid grid-rows-[repeat(2,150px)] grid-cols-4 gap-5">
+          {links.slice(0,8).map((link) => <LinkCard key={link.id} variant="grid" link={link} onClick={handleClick} />)}
         </div>
       )}
       {selectedLink && <LinkModal link={selectedLink} onClose={() => setSelectedLink(null)} onUpdate={refetch} categoryMap={categoryMap} />}
