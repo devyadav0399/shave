@@ -3,6 +3,8 @@ import { linkRepository } from "./link.repository";
 import { isValidUUID } from "../../utils/validation";
 import { AppError } from "../../utils/AppError";
 import { linkService } from "./link.service";
+import { zValidator } from "@hono/zod-validator";
+import { createLinkSchema, updateLinkSchema } from "./link.schema";
 
 const app = new Hono()
 
@@ -27,9 +29,8 @@ app.get('/:linkId', async (c) => {
   } else throw new AppError(404, 'Not found')
 })
 
-app.post('/', async (c) => {
-  const body = await c.req.json()
-  if (!body?.url?.trim()) throw new AppError(400, 'Some fields are missing.')
+app.post('/', zValidator('json', createLinkSchema), async (c) => {
+  const body = c.req.valid('json')
   const createdLink = await linkRepository.create(body.url)
   linkService.enrichLink(createdLink.id)
     .catch(e => console.log(e))
@@ -42,11 +43,10 @@ app.post('/', async (c) => {
   )
 })
 
-app.patch(':linkId', async (c) => {
+app.patch(':linkId', zValidator('json', updateLinkSchema), async (c) => {
   const { linkId } = c.req.param()
   if (!isValidUUID(linkId)) throw new AppError(400, 'Invalid ID')
-  const body = await c.req.json()
-  if (!body?.title?.trim() && !body?.summary?.trim() && !('isConsumed' in body) && !body?.categoryId) throw new AppError(400, 'No fields provided')
+  const body = c.req.valid('json')
   const updatedLink = await linkRepository.update(linkId, body)
   if (!updatedLink) throw new AppError(404, 'Link not found')
   return c.json({

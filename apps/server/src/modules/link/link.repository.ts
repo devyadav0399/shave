@@ -1,7 +1,8 @@
 import pool from "../../db/client"
-import type { Link, UpdateLinkPayload } from "../../types/link"
+import type { Link } from "../../types/link"
 import { patchLinkQuery } from "../../utils/linkQueryBuilder";
 import type { EnrichedMetadata } from "./link.enrichment";
+import type { UpdateLinkInput } from "./link.schema";
 
 const get = async (categoryId?: string): Promise<Link[]> => {
   const query = categoryId
@@ -23,7 +24,7 @@ const create = async (url: string): Promise<Link> => {
   return result.rows[0]
 }
 
-const update = async (linkId: string, body: Record<string, unknown>): Promise<Link | undefined> => {
+const update = async (linkId: string, body: UpdateLinkInput): Promise<Link | undefined> => {
   const { query, values } = patchLinkQuery(body);
   const result = await pool.query(`UPDATE link SET ${query} WHERE id=$${values.length + 1} RETURNING *;`, [...values, linkId])
   return result.rows[0]

@@ -2,6 +2,8 @@ import { Hono } from "hono";
 import { categoryRepository } from "./category.repository";
 import { isValidUUID } from "../../utils/validation";
 import { AppError } from "../../utils/AppError";
+import { zValidator } from "@hono/zod-validator";
+import { createCategorySchema } from "./category.schema";
 
 const app = new Hono()
 
@@ -13,9 +15,8 @@ app.get('/', async (c) => {
   })
 })
 
-app.post('/', async (c) => {
-  const body = await c.req.json()
-  if (!body?.name?.trim()) throw new AppError(400, 'Some fields are missing.')
+app.post('/', zValidator('json', createCategorySchema), async (c) => {
+  const body = c.req.valid('json')
   const createdCategory = await categoryRepository.create(body.name)
   return c.json(
     {

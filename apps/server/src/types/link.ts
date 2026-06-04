@@ -13,10 +13,3 @@ export interface Link {
   is_consumed: boolean;
   created_at: string;
 }
-
-export interface UpdateLinkPayload {
-  title?: string;
-  summary?: string;
-  categoryId?: string;
-  isConsumed?: boolean;
-}
